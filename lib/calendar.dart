@@ -1,17 +1,23 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:shared_preferences/shared_preferences.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:table_calendar/table_calendar.dart';
+import 'util.dart';
+import 'constants.dart' as constants;
 
 class TrainingCalendar extends StatefulWidget {
+  const TrainingCalendar({Key? key}) : super(key: key);
+
   @override
   _TrainingCalendarState createState() => _TrainingCalendarState();
 }
 
 class _TrainingCalendarState extends State<TrainingCalendar> {
   late CalendarController _controller;
-  late Map<DateTime, List<dynamic>> _events;
-  late List<dynamic> _selectedEvents;
+  late Map<DateTime, List<dynamic>> _trainingsEvents;
+  late List? _selectedEvents;
   late TextEditingController _eventController;
   late SharedPreferences prefs;
 
@@ -20,8 +26,20 @@ class _TrainingCalendarState extends State<TrainingCalendar> {
     super.initState();
     _controller = CalendarController();
     _eventController = TextEditingController();
-    _events = {};
+    _trainingsEvents = {};
     _selectedEvents = [];
+    initTrainingEvents();
+  }
+
+  void initTrainingEvents() async {
+    prefs = await SharedPreferences.getInstance();
+    _trainingsEvents = Map<DateTime, List<dynamic>>.from(
+        decodeMap(json.decode(prefs.getString("trainingsData") ?? "{}")));
+    DateTime now = DateTime.now();
+    setState(() {
+      _selectedEvents =
+          _trainingsEvents[DateTime(now.year, now.month, now.day)];
+    });
   }
 
   @override
@@ -36,24 +54,30 @@ class _TrainingCalendarState extends State<TrainingCalendar> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             TableCalendar(
-              events: _events,
+              events: _trainingsEvents,
               initialCalendarFormat: CalendarFormat.week,
+              initialSelectedDay: DateTime.now(),
               calendarStyle: CalendarStyle(
                   canEventMarkersOverflow: true,
-                  todayColor: Theme.of(context).primaryColor,
-                  selectedColor: Theme.of(context).hintColor,
+                  selectedColor: Colors.green, //Theme.of(context).hintColor,
                   markersColor: Theme.of(context).primaryColor,
-                  todayStyle: TextStyle(
+                  todayStyle: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18.0,
-                      color: Theme.of(context).primaryColor)),
+                      color: Colors.white),
+                  weekendStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                      color: Colors.pink)),
+              daysOfWeekStyle: DaysOfWeekStyle(
+                  weekendStyle: TextStyle(color: Colors.grey[400])),
               headerStyle: HeaderStyle(
                 centerHeaderTitle: true,
                 formatButtonDecoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(20.0),
                 ),
-                formatButtonTextStyle: TextStyle(color: Colors.white),
+                formatButtonTextStyle: const TextStyle(color: Colors.white),
                 formatButtonShowsNext: false,
               ),
               startingDayOfWeek: StartingDayOfWeek.monday,
@@ -71,82 +95,87 @@ class _TrainingCalendarState extends State<TrainingCalendar> {
                         borderRadius: BorderRadius.circular(10.0)),
                     child: Text(
                       date.day.toString(),
-                      style: Theme.of(context).textTheme.headline4,
                     )),
                 todayDayBuilder: (context, date, events) => Container(
                     margin: const EdgeInsets.all(4.0),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
+                        border:
+                            Border.all(color: Theme.of(context).primaryColor),
                         borderRadius: BorderRadius.circular(10.0)),
                     child: Text(
                       date.day.toString(),
-                      style: TextStyle(color: Colors.white),
                     )),
               ),
               calendarController: _controller,
             ),
-            ..._selectedEvents.map((event) => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height / 20,
-                    width: MediaQuery.of(context).size.width / 2,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey)),
-                    child: Center(
-                        child: Text(
-                      event,
-                      style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
-                    )),
-                  ),
-                )),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: GridView.count(
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  crossAxisCount: 2,
+                  children: <Widget>[
+                    Container(
+                        padding: const EdgeInsets.all(8),
+                        child: Column(children: [
+                          if (_selectedEvents!.isNotEmpty)
+                            Container(
+                                padding: const EdgeInsets.all(8),
+                                child: constants.appIcons[0]),
+                          if (_selectedEvents!.isNotEmpty)
+                            Text(transformMilliSeconds(_selectedEvents![0])),
+                          //color: Colors.pink[500],
+                        ])),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        children: [
+                          if (_selectedEvents!.isNotEmpty)
+                            Container(
+                                padding: const EdgeInsets.all(8),
+                                child: constants.appIcons[1]),
+                          if (_selectedEvents!.isNotEmpty)
+                            Text(transformMilliSeconds(_selectedEvents![1])),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        children: [
+                          if (_selectedEvents!.isNotEmpty)
+                            Container(
+                                padding: const EdgeInsets.all(8),
+                                child: constants.appIcons[2]),
+                          if (_selectedEvents!.isNotEmpty)
+                            Text(transformMilliSeconds(_selectedEvents![2])),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        children: [
+                          if (_selectedEvents!.isNotEmpty)
+                            Container(
+                                padding: const EdgeInsets.all(8),
+                                child: constants.appIcons[3]),
+                          if (_selectedEvents!.isNotEmpty)
+                            Text(transformMilliSeconds(_selectedEvents![3])),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.black,
-        child: Icon(Icons.add),
-        onPressed: _showAddDialog,
-      ),
     );
-  }
-
-  _showAddDialog() async {
-    await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              backgroundColor: Colors.white70,
-              title: Text("Add Events"),
-              content: TextField(
-                controller: _eventController,
-              ),
-              actions: <Widget>[
-                /*FlatButton(
-              child: Text("Save",style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),),
-              onPressed: () {
-                if (_eventController.text.isEmpty) return;
-                setState(() {
-                  if (_events[_controller.selectedDay] != null) {
-                    _events[_controller.selectedDay]
-                        ?.add(_eventController.text);
-                  } else {
-                    _events[_controller.selectedDay] = [
-                      _eventController.text
-                    ];
-                  }
-                  prefs.setString("events", json.encode(encodeMap(_events)));
-                  _eventController.clear();
-                  Navigator.pop(context);
-                });
-
-              },
-            )*/
-              ],
-            ));
   }
 }

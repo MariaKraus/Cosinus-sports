@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.pink,
         focusColor: Colors.pink,
         hintColor: Colors.white,
-        fontFamily: 'Georgia',
+        fontFamily: 'Arial',
         textTheme: const TextTheme(
           headline1: TextStyle(
               fontSize: 20.0,

@@ -39,7 +39,7 @@ class _TrainingsplanState extends State<TrainingsPlan> {
       primary: false,
       slivers: <Widget>[
         SliverPadding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(8),
           sliver: SliverGrid.count(
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,

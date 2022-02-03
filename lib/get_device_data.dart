@@ -6,6 +6,7 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'dart:typed_data';
+import 'util.dart';
 import 'constants.dart' as constants;
 
 class DeviceData extends StatefulWidget {
@@ -54,8 +55,7 @@ class _DeviceDataState extends State<DeviceData> {
     List? dailyTraining = widget._trainingsData[
         DateTime(widget.now.year, widget.now.month, widget.now.day)];
     if (dailyTraining != null) {
-      int value1 = dailyTraining[0];
-      widget.timerHealthZone.setStartTime(value1);
+      widget.timerHealthZone.setStartTime(dailyTraining[0]);
       widget.timerFatBurningZone.setStartTime(dailyTraining[1]);
       widget.timerAerobeZone.setStartTime(dailyTraining[2]);
       widget.timerAnearobeZone.setStartTime(dailyTraining[3]);
@@ -84,22 +84,6 @@ class _DeviceDataState extends State<DeviceData> {
       _device.disconnect();
     }
     FlutterBlue.instance.stopScan();
-  }
-
-  Map<String, dynamic> encodeMap(Map<DateTime, dynamic> map) {
-    Map<String, dynamic> newStringMap = {};
-    map.forEach((key, value) {
-      newStringMap[key.toString()] = map[key];
-    });
-    return newStringMap;
-  }
-
-  Map<DateTime, dynamic> decodeMap(Map<String, dynamic> map) {
-    Map<DateTime, dynamic> newDTimeMap = {};
-    map.forEach((key, value) {
-      newDTimeMap[DateTime.parse(key)] = map[key];
-    });
-    return newDTimeMap;
   }
 
   Future<void> updateHeartRate(rawData) async {
@@ -156,17 +140,6 @@ class _DeviceDataState extends State<DeviceData> {
         widget.activeSW.start();
       }
     }
-  }
-
-  transformMilliSeconds(int milliseconds) {
-    int hundreds = (milliseconds / 10).truncate();
-    int seconds = (hundreds / 100).truncate();
-    int minutes = (seconds / 60).truncate();
-
-    String minutesStr = (minutes % 60).toString().padLeft(2, '0');
-    String secondsStr = (seconds % 60).toString().padLeft(2, '0');
-
-    return "$minutesStr:$secondsStr";
   }
 
   Future<bool> _bleConnect() async {
