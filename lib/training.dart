@@ -9,11 +9,10 @@ import 'dart:typed_data';
 import 'util.dart';
 import 'constants.dart' as constants;
 
-class DeviceData extends StatefulWidget {
-  DeviceData({Key? key}) : super(key: key);
+class TrainingsData extends StatefulWidget {
+  TrainingsData({Key? key}) : super(key: key);
 
-  var _bpm;
-  final double _maxBpm = 100.0;
+  late double _maxBpm;
   late final StopWatch timerHealthZone;
   late StopWatch activeSW = StopWatch();
   late final StopWatch timerFatBurningZone;
@@ -25,13 +24,13 @@ class DeviceData extends StatefulWidget {
   late DateTime now;
 
   @override
-  State<DeviceData> createState() => _DeviceDataState();
+  State<TrainingsData> createState() => _TrainingsDataState();
 }
 
-class _DeviceDataState extends State<DeviceData> {
+class _TrainingsDataState extends State<TrainingsData> {
   String _connectionStatus = "Disconnected";
   String _heartRate = "- bpm";
-  var _device = null;
+  var _device;
   bool _isConnected = false;
   bool earConnectFound = false;
 
@@ -61,8 +60,19 @@ class _DeviceDataState extends State<DeviceData> {
       widget.timerAnearobeZone.setStartTime(dailyTraining[3]);
       widget.timerWarningZone.setStartTime(dailyTraining[4]);
     }
+    Map<String, dynamic> _userInformation =
+        json.decode(widget.prefs.getString("userInformation") ?? "{}");
+    String _age = "";
+    String _weight = "";
+    String _sex = "";
+    if (_userInformation.isNotEmpty) {
+      _age = _userInformation["age"].toString();
+      _weight = _userInformation["weight"].toString();
+      _sex = _userInformation["sex"].toString();
+    }
     setState(() {
       _heartRate = "- bpm";
+      widget._maxBpm = sallyEdwards(_age, _weight, _sex);
     });
   }
 
@@ -233,9 +243,9 @@ class _DeviceDataState extends State<DeviceData> {
                 borderRadius: const BorderRadius.all(Radius.circular(20))),
             child: Scaffold(
                 appBar: AppBar(
-                    title: const Center(child: Text('Training')),
-                    automaticallyImplyLeading: false,
-                    backgroundColor: Theme.of(context).primaryColor),
+                    title: Text("Training"),
+                    titleTextStyle: Theme.of(context).textTheme.caption,
+                    centerTitle: true),
                 body: Column(children: <Widget>[
                   Padding(
                       padding: const EdgeInsets.all(20),

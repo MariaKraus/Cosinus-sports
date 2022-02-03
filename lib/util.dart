@@ -24,3 +24,8 @@ transformMilliSeconds(int milliseconds) {
 
   return "$minutesStr:$secondsStr";
 }
+
+sallyEdwards(age, weight, sex) {
+  double base = (sex == "M") ? 214 : 210;
+  return base - 0.5 * double.parse(age) - 0.11 * double.parse(weight);
+}

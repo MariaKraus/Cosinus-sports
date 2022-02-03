@@ -17,6 +17,7 @@ class TrainingCalendar extends StatefulWidget {
 class _TrainingCalendarState extends State<TrainingCalendar> {
   late CalendarController _controller;
   late Map<DateTime, List<dynamic>> _trainingsEvents;
+  late Map<DateTime, List<dynamic>> _trainingsPlan;
   late List? _selectedEvents;
   late TextEditingController _eventController;
   late SharedPreferences prefs;
@@ -27,6 +28,7 @@ class _TrainingCalendarState extends State<TrainingCalendar> {
     _controller = CalendarController();
     _eventController = TextEditingController();
     _trainingsEvents = {};
+    _trainingsPlan = {};
     _selectedEvents = [];
     initTrainingEvents();
   }
@@ -35,10 +37,26 @@ class _TrainingCalendarState extends State<TrainingCalendar> {
     prefs = await SharedPreferences.getInstance();
     _trainingsEvents = Map<DateTime, List<dynamic>>.from(
         decodeMap(json.decode(prefs.getString("trainingsData") ?? "{}")));
+    _trainingsPlan = Map<DateTime, List<dynamic>>.from(
+        decodeMap(json.decode(prefs.getString("trainingsPlan") ?? "{}")));
     DateTime now = DateTime.now();
     setState(() {
-      _selectedEvents =
+      List<dynamic>? plan =
+          _trainingsPlan[DateTime(now.year, now.month, now.day)];
+      List<dynamic>? events =
           _trainingsEvents[DateTime(now.year, now.month, now.day)];
+      if (plan != null) {
+        if (events == null) {
+          events = {} as List?;
+          for (int i = 0; i < 5; i++) {
+            events?.add(0);
+          }
+        }
+        events?.addAll(plan);
+      }
+      _selectedEvents = events;
+
+      //_selectedEvents?.addAll(plan!);
     });
   }
 
@@ -46,9 +64,9 @@ class _TrainingCalendarState extends State<TrainingCalendar> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Center(child: Text('Trainings Kalender')),
-      ),
+          title: Text("Kalender"),
+          titleTextStyle: Theme.of(context).textTheme.caption,
+          centerTitle: true),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,6 +146,10 @@ class _TrainingCalendarState extends State<TrainingCalendar> {
                                 child: constants.appIcons[0]),
                           if (_selectedEvents!.isNotEmpty)
                             Text(transformMilliSeconds(_selectedEvents![0])),
+                          if (_selectedEvents!.length > 5)
+                            Text("/  " +
+                                transformMilliSeconds(
+                                    (_selectedEvents![5] * 60000))),
                           //color: Colors.pink[500],
                         ])),
                     Container(
