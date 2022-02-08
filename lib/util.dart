@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 Map<String, dynamic> encodeMap(Map<DateTime, dynamic> map) {
   Map<String, dynamic> newStringMap = {};
   map.forEach((key, value) {
@@ -28,4 +30,9 @@ transformMilliSeconds(int milliseconds) {
 sallyEdwards(age, weight, sex) {
   double base = (sex == "M") ? 214 : 210;
   return base - 0.5 * double.parse(age) - 0.11 * double.parse(weight);
+}
+
+getStringDate(DateTime date) {
+  DateTime now = DateTime.now();
+  return DateFormat('dd.MM.yyyy').format(date);
 }

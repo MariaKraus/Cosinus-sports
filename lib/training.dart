@@ -85,9 +85,20 @@ class _TrainingsDataState extends State<TrainingsData> {
     dailyTraining.add(widget.timerAerobeZone.elapsedMillis);
     dailyTraining.add(widget.timerAnearobeZone.elapsedMillis);
     dailyTraining.add(widget.timerWarningZone.elapsedMillis);
-    widget._trainingsData[
-            DateTime(widget.now.year, widget.now.month, widget.now.day)] =
-        dailyTraining;
+    List? trainingsData = widget._trainingsData[
+        DateTime(widget.now.year, widget.now.month, widget.now.day)];
+    if (trainingsData == null) {
+      trainingsData = [];
+      for (int i = 0; i < 5; i++) {
+        trainingsData.add(0);
+      }
+    }
+    trainingsData[0] = dailyTraining[0];
+    trainingsData[1] = dailyTraining[1];
+    trainingsData[2] = dailyTraining[2];
+    trainingsData[3] = dailyTraining[3];
+    trainingsData[4] = dailyTraining[4];
+
     widget.prefs.setString(
         "trainingsData", json.encode(encodeMap(widget._trainingsData)));
     if (_device != null) {
@@ -274,7 +285,7 @@ class _TrainingsDataState extends State<TrainingsData> {
                                   padding: EdgeInsets.all(10.0),
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                        primary: Colors.teal,
+                                        primary: Colors.grey,
                                         onPrimary: Colors.white,
                                         shadowColor: Colors.black,
                                         elevation: 20,
@@ -382,7 +393,7 @@ class _TrainingsDataState extends State<TrainingsData> {
                                   padding: const EdgeInsets.all(8),
                                   child: constants.appIcons[3]),
                               Text(transformMilliSeconds(
-                                  widget.timerAerobeZone.elapsedMillis)),
+                                  widget.timerAnearobeZone.elapsedMillis)),
                               //widget.timerAnearobeZone,
                             ],
                           ),

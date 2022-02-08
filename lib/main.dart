@@ -13,28 +13,35 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'e#active1',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
         primaryColor: Colors.pink,
         focusColor: Colors.pink,
         hintColor: Colors.white,
         fontFamily: 'Arial',
-        textTheme: const TextTheme(
-          headline1: TextStyle(
+        textTheme: TextTheme(
+          headline1: const TextStyle(
               fontSize: 20.0,
               fontWeight: FontWeight.bold,
               height: 2,
               color: Colors.white),
-          headline2: TextStyle(
+          headline2: const TextStyle(
               fontSize: 25.0, fontWeight: FontWeight.bold, color: Colors.pink),
-          headline3: TextStyle(fontSize: 18.0, color: Colors.white),
-          headline4: TextStyle(fontSize: 18.0, color: Colors.pink),
-          bodyText1: TextStyle(
+          headline3: const TextStyle(fontSize: 18.0, color: Colors.white),
+          headline4: const TextStyle(fontSize: 18.0, color: Colors.pink),
+          headline5: TextStyle(
+              fontSize: 30.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[800]),
+          headline6: const TextStyle(
+              fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.pink),
+          bodyText1: const TextStyle(
               fontSize: 25.0, fontWeight: FontWeight.bold, color: Colors.white),
-          bodyText2: TextStyle(fontSize: 20.0, color: Colors.white),
-          caption: TextStyle(
+          bodyText2: const TextStyle(fontSize: 20.0, color: Colors.white),
+          caption: const TextStyle(
               fontSize: 40.0, fontWeight: FontWeight.bold, color: Colors.pink),
-          button: TextStyle(
+          button: const TextStyle(
               fontSize: 25.0, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),

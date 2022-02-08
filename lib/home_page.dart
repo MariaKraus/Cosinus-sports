@@ -27,7 +27,8 @@ class _HomePageState extends State<HomePage> {
           child: ListView(children: <Widget>[
         Card(
           child: ListTile(
-            title: const Center(child: Text("Body Information")),
+            minVerticalPadding: 40.0,
+            title: Text("Profil", style: Theme.of(context).textTheme.headline1),
             onTap: () {
               Navigator.push(
                   context,
@@ -38,7 +39,9 @@ class _HomePageState extends State<HomePage> {
         ),
         Card(
             child: ListTile(
-                title: const Center(child: Text("Wie trainiere ich effektiv?")),
+                minVerticalPadding: 40.0,
+                title: Text("Wie trainiere ich effektiv?",
+                    style: Theme.of(context).textTheme.headline1),
                 onTap: () {
                   Navigator.push(
                       context,
@@ -53,15 +56,16 @@ class _HomePageState extends State<HomePage> {
 
 class HomePageBody extends StatelessWidget {
   HomePageBody({Key? key}) : super(key: key);
-  final TrainingsPlan tPlan = TrainingsPlan();
-
   @override
   Widget build(BuildContext context) {
     return ListView(children: <Widget>[
       //buildTrainingsPlanCard(context, 'LAST TRAINING'),
       Card(
           child: ListTile(
-              title: const Text("Training"),
+              minVerticalPadding: (MediaQuery.of(context).size.height / 8),
+              title: Center(
+                  child: Text("Training",
+                      style: Theme.of(context).textTheme.headline5)),
               tileColor: Theme.of(context).primaryColor,
               onTap: () {
                 Navigator.push(context,
@@ -69,14 +73,23 @@ class HomePageBody extends StatelessWidget {
               })),
       Card(
           child: ListTile(
-              title: const Text("Trainingsplan"),
+              minVerticalPadding: (MediaQuery.of(context).size.height / 8),
+              title: Center(
+                  child: Text("Trainingsplan",
+                      style: Theme.of(context).textTheme.headline6)),
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => TrainingsPlan()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            TrainingsPlan(date: DateTime.now())));
               })),
       Card(
           child: ListTile(
-        title: const Text("Calendar"),
+        minVerticalPadding: (MediaQuery.of(context).size.height / 8),
+        title: Center(
+            child:
+                Text("Kalender", style: Theme.of(context).textTheme.headline6)),
         onTap: () {
           Navigator.push(
               context,
